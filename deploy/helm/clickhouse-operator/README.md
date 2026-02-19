@@ -92,6 +92,7 @@ crdHook:
 | metrics.containerSecurityContext | object | `{}` |  |
 | metrics.enabled | bool | `true` |  |
 | metrics.env | list | `[]` | additional environment variables for the deployment of metrics-exporter containers possible format value `[{"name": "SAMPLE", "value": "text"}]` |
+| metrics.image.oci_registry | string | `""` | optional image registry prefix |
 | metrics.image.pullPolicy | string | `"IfNotPresent"` | image pull policy |
 | metrics.image.repository | string | `"altinity/metrics-exporter"` | image repository |
 | metrics.image.tag | string | `""` | image tag (chart's appVersion value will be used if not set) |
@@ -101,6 +102,7 @@ crdHook:
 | nodeSelector | object | `{}` | node for scheduler pod assignment, check `kubectl explain pod.spec.nodeSelector` for details |
 | operator.containerSecurityContext | object | `{}` |  |
 | operator.env | list | `[]` | additional environment variables for the clickhouse-operator container in deployment possible format value `[{"name": "SAMPLE", "value": "text"}]` |
+| operator.image.oci_registry | string | `""` | optional image registry prefix |
 | operator.image.pullPolicy | string | `"IfNotPresent"` | image pull policy |
 | operator.image.repository | string | `"altinity/clickhouse-operator"` | image repository |
 | operator.image.tag | string | `""` | image tag (chart's appVersion value will be used if not set) |
@@ -129,4 +131,3 @@ crdHook:
 | serviceMonitor.operatorMetrics.scrapeTimeout | string | `""` |  |
 | tolerations | list | `[]` | tolerations for scheduler pod assignment, check `kubectl explain pod.spec.tolerations` for details |
 | topologySpreadConstraints | list | `[]` |  |
-

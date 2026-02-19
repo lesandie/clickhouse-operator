@@ -34,6 +34,8 @@ crdHook:
   affinity: {}
 operator:
   image:
+    # operator.image.oci_registry -- optional image registry prefix (e.g. 1234567890.dkr.ecr.us-east-1.amazonaws.com)
+    oci_registry: ""
     # operator.image.repository -- image repository
     repository: altinity/clickhouse-operator
     # operator.image.tag -- image tag (chart's appVersion value will be used if not set)
@@ -59,6 +61,8 @@ operator:
 metrics:
   enabled: true
   image:
+    # metrics.image.oci_registry -- optional image registry prefix (e.g. 1234567890.dkr.ecr.us-east-1.amazonaws.com)
+    oci_registry: ""
     # metrics.image.repository -- image repository
     repository: altinity/metrics-exporter
     # metrics.image.tag -- image tag (chart's appVersion value will be used if not set)
