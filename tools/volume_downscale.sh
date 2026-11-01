@@ -247,6 +247,9 @@ abort_on_pod_volume_errors() {
         echo "$warnings"
     fi
 
+    # Volumes mount before any init container starts; a started init means old attach/mount events are stale.
+    [[ "$pod_state" == *":running"* || "$pod_state" == *"terminated("* ]] && return 0
+
     errors=$(jq -r --arg uid "$uid" --argjson n "$threshold" '
         .items[]?
         | select(.involvedObject.uid == $uid
