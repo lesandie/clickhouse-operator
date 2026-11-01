@@ -104,7 +104,7 @@ Apply a `ClickHouseInstallationTemplate` that adds a restartable rsync **initCon
 
 The script waits until rsync “Literal data” is small enough for a short offline window (`WARM_COPY_*` knobs), then asks for `WARM_COPY_READY`.
 
-On every poll it prints the pod phase, the init-container state and the latest Warning events of the current pod. If the pod reports `FailedAttachVolume` or `FailedMount` `VOLUME_ERROR_EVENT_THRESHOLD` times (default 3), the script stops with exit code 31 instead of waiting out the timeout. The original PVC is untouched at that point; run `cleanup`, then delete the temporary PVC. The same check runs during `final-copy`.
+On every poll it prints the pod phase, the init-container state and the latest Warning events of the current pod. If the pod reports `FailedAttachVolume` or `FailedMount` `VOLUME_ERROR_EVENT_THRESHOLD` times (default 3), the script stops with exit code 31 instead of waiting out the timeout. The original PVC is untouched at that point; run `cleanup`, then delete the temporary PVC.
 
 ### swap (destructive)
 
@@ -151,7 +151,7 @@ sequenceDiagram
 | `TARGET_STS` | StatefulSet (e.g. `chi-…-0-0`) |
 | `NEW_SIZE` | Desired capacity (e.g. `1500Gi`). Always required; for a class-only change pass the current size |
 | `NEW_STORAGE_CLASS` | Optional. Target StorageClass; defaults to the current class. Must exist (exit 29 otherwise) |
-| `VOLUME_ERROR_EVENT_THRESHOLD` | Optional. Number of `FailedAttachVolume` / `FailedMount` events that stops warm-copy or final-copy (default 3) |
+| `VOLUME_ERROR_EVENT_THRESHOLD` | Optional. Number of `FailedAttachVolume` / `FailedMount` events that stops warm-copy (default 3) |
 
 Everything else (CHI name, PVC/PV ids, migration CHIT name, workdir) is derived. Optional overrides and timeouts are documented in `./tools/volume_downscale.sh` usage.
 
@@ -191,7 +191,7 @@ Stop there if that solves capacity. Continue with PVC swap only if a single smal
 ## Risks and operator rules
 
 - **Desired size must stay `NEW_SIZE`** in CHI and ACM after the swap, or the claim can grow again. Likewise keep the desired class at `NEW_STORAGE_CLASS`
-- A node that cannot attach the new disk type leaves the pod in `Init`; the script stops with exit code 31 on repeated attach/mount errors
+- A node that cannot attach the new disk type leaves the pod in `Init`; warm-copy stops with exit code 31 on repeated attach/mount errors
 - **Do not delete** the retained old PVC until validation and retention are done—it is the rollback source
 - CHITs need a `taskID` bump to force reconcile; pod templates merge by name
 - Migration CHITs add `initContainers` only—leave regular containers to the operator
@@ -226,4 +226,4 @@ After the retained PVC/PV are deleted, rollback from this procedure is gone.
 | --- | --- |
 | 29 | `NEW_STORAGE_CLASS` does not exist |
 | 30 | `swap`: `NEW_STORAGE_CLASS` differs from the temp PVC's class (nothing was changed) |
-| 31 | Repeated `FailedAttachVolume` / `FailedMount` events during warm-copy or final-copy |
+| 31 | Repeated `FailedAttachVolume` / `FailedMount` events during warm-copy |

@@ -51,7 +51,7 @@ Optional:
                          Default: 500000000000. Used for auto warm-copy timeout.
   WARM_COPY_POLL_SECONDS  Default: 60. Poll interval while waiting for warm-copy convergence.
   VOLUME_ERROR_EVENT_THRESHOLD
-                         Default: 3. Stop warm-copy/final-copy (exit 31) when the target pod has this many
+                         Default: 3. Stop warm-copy (exit 31) when the target pod has this many
                          FailedAttachVolume/FailedMount events, for example a disk type the node cannot attach.
   AUTO_CONFIRM           Default: no. Env equivalent of --auto-confirm.
 EOF
@@ -308,7 +308,6 @@ wait_for_final_copy_and_ready() {
             echo "Waiting for pod $TARGET_POD to be recreated waited=${waited}s"
         fi
 
-        abort_on_pod_volume_errors
         sleep "$interval"
         waited=$((waited + interval))
     done
